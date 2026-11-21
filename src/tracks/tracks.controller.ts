@@ -10,4 +10,9 @@ export class TracksController {
   getAllTracks(): Promise<Track[]> {
     return this.tracksService.findAll();
   }
+
+  @Get(':id')
+  getTrackById(id: number): Promise<Track | null> {
+    return this.tracksService.findOne(id);
+  }
 }

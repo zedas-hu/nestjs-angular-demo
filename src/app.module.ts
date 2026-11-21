@@ -12,7 +12,7 @@ import { TracksModule } from './tracks/tracks.module.js';
         database: process.env.DB_URL,
         entities: [],
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: process.env.NODE_ENV === 'development',
       }),
     }),
     TracksModule,

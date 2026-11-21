@@ -27,8 +27,10 @@
 
 ## Project setup
 
+Install dependencies once from the repository root:
+
 ```bash
-$ npm install
+npm install
 ```
 
 ## Compile and run the project
