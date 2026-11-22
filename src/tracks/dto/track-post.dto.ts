@@ -1,6 +1,6 @@
-import type { TrackCreateRequest } from '@demo/shared';
+import { MAX_TRACK_DURATION_MILLISECONDS, type TrackCreateRequest } from '@demo/shared';
 import { Transform } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, MaxLength, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Max, MaxLength, Min } from 'class-validator';
 import { Digits } from '../../common/validators.js';
 
 const trimmed = ({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value);
@@ -32,6 +32,7 @@ export class TrackPostDto implements TrackCreateRequest {
   composer: string | null;
 
   @Min(1000, { message: 'DURATION_RANGE' })
+  @Max(MAX_TRACK_DURATION_MILLISECONDS, { message: 'DURATION_RANGE' })
   @IsInt({ message: 'DURATION_REQUIRED' })
   milliseconds: number;
 

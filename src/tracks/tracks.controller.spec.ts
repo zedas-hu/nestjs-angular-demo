@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { MAX_TRACK_DURATION_MILLISECONDS } from '@demo/shared';
 import { createValidationPipe } from '../common/problem.js';
 import { TrackListQueryDto } from './dto/track-list-query.dto.js';
 import { TrackPostDto } from './dto/track-post.dto.js';
@@ -119,4 +120,25 @@ describe('track body validation', () => {
       fieldErrors: { name: 'TRACK_NAME_REQUIRED', milliseconds: 'DURATION_REQUIRED' },
     });
   });
+
+  it('accepts a duration of exactly 100 hours', async () => {
+    await expect(transformBody({ ...validBody, milliseconds: MAX_TRACK_DURATION_MILLISECONDS }))
+      .resolves.toMatchObject({ milliseconds: MAX_TRACK_DURATION_MILLISECONDS });
+  });
+
+  it.each([MAX_TRACK_DURATION_MILLISECONDS + 1, 1e21])(
+    'rejects durations above 100 hours (%s) with a 400 validation problem',
+    async (milliseconds) => {
+      const error = await transformBody({ ...validBody, milliseconds }).catch(
+        (reason: HttpException) => reason,
+      );
+
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.getStatus()).toBe(400);
+      expect(error.getResponse()).toEqual({
+        detail: 'INVALID_TRACK_DATA',
+        fieldErrors: { milliseconds: 'DURATION_RANGE' },
+      });
+    },
+  );
 });
