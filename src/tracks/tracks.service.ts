@@ -91,6 +91,16 @@ export class TracksService {
     return this.findResponse(id);
   }
 
+  async findByAlbumIds(albumIds: number[]): Promise<TrackRecord[]> {
+    if (albumIds.length === 0) {
+      return [];
+    }
+    return this.createTrackQuery()
+      .where('track.AlbumId IN (:...albumIds)', { albumIds })
+      .orderBy('track.TrackId', 'ASC')
+      .getRawMany<TrackRecord>();
+  }
+
   private createTrackQuery(): SelectQueryBuilder<Track> {
     const [[firstColumn, firstAlias], ...restColumns] = RESULT_COLUMNS;
     const qb = this.tracksRepository

@@ -11,5 +11,6 @@ import { Track } from './tracks.entity.js';
   imports: [TypeOrmModule.forFeature([Track, Album, Genre, MediaType])],
   providers: [TracksService],
   controllers: [TracksController],
+  exports: [TracksService],
 })
 export class TracksModule {}
