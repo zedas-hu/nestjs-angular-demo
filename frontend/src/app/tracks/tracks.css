@@ -1,0 +1,177 @@
+main {
+    header {
+        display: grid;
+        grid-template-columns: 1fr max-content max-content max-content;
+        column-gap: 2rem;
+        align-items: center;
+        margin-top: 0;
+        margin-bottom: 2rem;
+        align-items: baseline;
+        padding: 0 0.5rem;
+
+        h1 {
+            margin: 0 0 0 0.5rem;
+        }
+
+        div.filter {
+            input {
+                background: transparent;
+                border: 0;
+                font-size: 1.5rem;
+                text-align: right;
+
+                &:focus {
+                    background: transparent;
+                    outline: 0;
+                }
+            }
+        }
+
+        app-popup.order {
+            label {
+                margin-bottom: 1rem;
+                text-align: right;
+
+                &:first-of-type {
+                    margin-top: 0.5rem;
+                }
+
+                &:last-of-type {
+                    margin-top: 1.5rem;
+                }
+
+                input {
+                    appearance: none;
+                    position: relative;
+                    margin-left: 2rem;
+
+                    &:checked::before {
+                        content: "✓";
+                        color: var(--font-color);
+
+                        position: absolute;
+                        top: -1rem;
+                        left: -1.5rem;
+                    }
+                }
+            }
+        }
+    }
+
+    content {
+        height: 49rem;
+
+        table {
+            display: grid;
+            align-items: start;
+            grid-template-columns: 3fr 2fr 1fr 5rem;
+            row-gap: 0.5rem;
+            padding: 0 0.5rem;
+
+            thead {
+                display: contents;
+                tr {
+                    display: contents;
+                    th {
+                        text-align: left;
+                        border-bottom: 1.5px solid var(--line-color);
+                        padding-bottom: 1.5rem;
+                        margin-bottom: 1rem;
+                        height: 1rem;
+
+                        a {
+                            font-size: 1.25rem;
+                        }
+
+                        span.direction {
+                            margin-left: 0.5rem;
+                            font-size: 0.85rem;
+                            color: var(--button-color);
+                        }
+                    }
+                }
+            }
+
+            tbody, tfoot {
+                display: contents;
+                tr {
+                    display: contents;
+                    td {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        align-content: center;
+                        background-color: transparent;
+                        padding: 0.5rem;
+                        height: 3rem;
+
+                        &.empty {
+                            grid-column: 1 / -1;
+                            text-align: center;
+                            color: var(--font-color2);
+                        }
+
+                        span.artist {
+                            color: var(--sub-color);
+                            font-size: 0.95rem;
+                        }
+
+                        &.album a {
+                            font-size: 1rem;
+                        }
+
+                        &.genre {
+                            font-size: 1rem;
+                        }
+
+                        &.length {
+                            text-align: right;
+                            font-size: 1.2rem;
+                            font-family: Courier New, monospace;
+                            font-weight: bold;
+                        }
+                    }
+
+                    &:hover td {
+                        background-color: var(--row-hilight);
+                    }
+                }
+            }
+        }
+    }
+
+    footer {
+        display: grid;
+        grid-template-columns: 3rem 3rem 1fr 3rem 3rem;
+        gap: 0.5rem;
+        padding: 0 0.5rem;
+        border-top: 1.5px solid var(--line-color);
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+
+        button.mover {
+            text-box: trim-both cap alphabetic;
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 1rem;
+            color: var(--button-color);
+            background-color: var(--button-background);
+            border: 0;
+            border-radius: 0.25rem;
+
+            &:hover {
+                background-color: var(--button-hover);
+            }
+
+            &:disabled {
+                background-color: var(--button-disabled-background);
+                color: var(--button-disabled-color);
+            }
+        }
+
+        span {
+            text-align: center;
+            color: var(--data-color);
+        }
+    }
+}

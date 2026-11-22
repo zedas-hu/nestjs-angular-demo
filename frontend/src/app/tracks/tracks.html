@@ -1,0 +1,102 @@
+<main>
+    <header>
+        <h1>၊၊||၊ {{ t('TRACKS') }}</h1>
+        @if (tracksService.displayedPage()) {
+            <div class="filter">
+                @if (tracksService.getFilter() === undefined) {
+                    <button class="tool text-button" (click)="startSearch()">{{ t('SEARCH') }} 🔎︎</button>
+                } @else {
+                    <input #searchInput type="text" [value]="tracksService.getFilter()" (blur)="tracksService.getFilter() === '' &&tracksService.setFilter(undefined)" (input)="tracksService.setFilter($event.target.value)" />
+                    <button class="tool" (click)="tracksService.setFilter(undefined)">✖</button>
+                }
+            </div>
+
+            <app-popup class="order" text="{{ t('ORDER') }} ⇅">
+                <label><input type="radio" name="order" value="name" (click)="tracksService.setSort('name')" 
+                    [checked]="tracksService.getSort() === 'name'" />{{ t('NAME') }}</label>
+                <label><input type="radio" name="order" value="album" (click)="tracksService.setSort('albumTitle')" 
+                    [checked]="tracksService.getSort() === 'albumTitle'" />{{ t('ALBUM') }}</label>
+                <label><input type="radio" name="order" value="artist" (click)="tracksService.setSort('albumArtistName')" 
+                    [checked]="tracksService.getSort() === 'albumArtistName'" />{{ t('ARTIST') }}</label>
+                <label><input type="radio" name="order" value="genre" (click)="tracksService.setSort('genreName')" 
+                    [checked]="tracksService.getSort() === 'genreName'" />{{ t('GENRE') }}</label>
+                <label><input type="radio" name="order" value="composer" (click)="tracksService.setSort('composer')" 
+                    [checked]="tracksService.getSort() === 'composer'" />{{ t('COMPOSER') }}</label>
+                <label><input type="radio" name="order" value="length" (click)="tracksService.setSort('mediaTypeName')" 
+                    [checked]="tracksService.getSort() === 'mediaTypeName'" />{{ t('MEDIA_TYPE') }}</label>
+                <label><input type="checkbox" class="column-toggle" (click)="tracksService.setDirection(tracksService.getDirection() === 'asc' ? 'desc' : 'asc')" 
+                    [checked]="tracksService.getDirection() === 'asc'" />{{ t('ASCENDING') }}</label>
+            </app-popup>
+
+            @if (hasSession()) {
+                <div class="new">
+                    <a class="text-button" (click)="showNewAlbumDialog()">{{ t('NEW_ALBUM') }} ✚</a>
+                </div>
+            }
+        }
+    </header>
+
+    <content>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <a class="title tool text-button" (click)="setOrder('name')">{{ t('NAME') }}</a>
+                        <span class="direction">@if (tracksService.getSort() === 'name' && tracksService.getDirection() === 'asc') {⏷} @else if (tracksService.getSort() === 'name' && tracksService.getDirection() === 'desc') {⏶}</span>
+                    </th>
+                    <th>
+                        <a class="title tool text-button" (click)="setOrder('albumTitle')">{{ t('ALBUM') }}</a>
+                        <span class="direction">@if (tracksService.getSort() === 'albumTitle' && tracksService.getDirection() === 'asc') {⏷} @else if (tracksService.getSort() === 'albumTitle' && tracksService.getDirection() === 'desc') {⏶}</span>
+                    </th>
+                    <th>
+                        <a class="title tool text-button" (click)="setOrder('genreName')">{{ t('GENRE') }}</a>
+                        <span class="direction">@if (tracksService.getSort() === 'genreName' && tracksService.getDirection() === 'asc') {⏷} @else if (tracksService.getSort() === 'genreName' && tracksService.getDirection() === 'desc') {⏶}</span>
+                    </th>
+                    <th style="text-align: right;">◷</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (pageResource.error()) {
+            }
+            @if (!tracksService.displayedPage() && pageResource.isLoading()) {
+            }
+            @else if (tracksService.displayedPage(); as page) {
+                @if (page.content.length === 0) {
+                    <tr><td class="empty" colspan="4">{{ t('NO_RECORDS') }}</td></tr>
+                } @else {
+                    @for (track of page.content; track track.trackId) {
+                        <tr>
+                            <td class="name">{{ track.name }}<br/>
+                                <span class="artist">{{ track.artistName }}</span>
+                            </td>
+                            <td class="album">
+                                @if (track.albumId !== null) {
+                                    <a class="text-button" (click)="navigateToAlbum(track.albumId)">{{ track.albumTitle }}</a>
+                                } @else {
+                                    {{ track.albumTitle }}
+                                }
+                            </td>
+                            <td class="genre">{{ track.genreName }}</td>
+                            <td class="length">{{ convertToMinutes(track.milliseconds) }}</td>
+                        </tr>
+                    }
+                }
+            }
+            </tbody>
+        </table>
+    </content>
+
+    <footer class="pager">
+    @if (tracksService.displayedPage(); as page) {
+        <button class="mover" (click)="firstPage()" [disabled]="isFirstPage(page)">❮❮</button>
+        <button class="mover" (click)="previousPage()" [disabled]="isFirstPage(page)">❮</button>
+        <span>
+        @if (page.page.totalPages > 0) {
+            {{ t('PAGE_OF', page.page.number + 1, page.page.totalPages) }}
+        }
+        </span>
+        <button class="mover" (click)="nextPage()" [disabled]="isLastPage(page)">❯</button>
+        <button class="mover" (click)="lastPage()" [disabled]="isLastPage(page)">❯❯</button>
+    }
+    </footer>
+</main>

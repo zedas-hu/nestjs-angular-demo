@@ -1,132 +1,107 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Chinook Database Demo
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A full-stack demo application built with Angular and NestJS, using the [Chinook sample database](https://www.sqlitetutorial.net/sqlite-sample-database/) in SQLite. It demonstrates common frontend and backend development techniques through a music catalog for browsing tracks and albums.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## What this project demonstrates
 
-## Description
+### Angular frontend
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- A feature-oriented Angular application with standalone components and lazy-loaded routes.
+- Reactive UI state with signals, computed values, and Angular resources.
+- Signal-based forms with client-side validation for creating albums and tracks.
+- Runtime language switching between English and Hungarian. The selected language is saved in browser storage.
+- Light and dark themes, also saved in browser storage.
+- Track search across track, album, and artist names.
+- Server-side pagination (10 tracks per page) and sorting by track, album, artist, genre, composer, or media type.
+- Album browsing and details, plus localized validation and API error messages.
 
-## Project setup
+### NestJS backend
 
-Install dependencies once from the repository root:
+- REST endpoints backed by TypeORM and SQLite.
+- Request and response DTOs with request validation.
+- Server-side pagination, sorting, and filtering for the track catalog.
+- Operations for creating and deleting catalog data.
+- HTTP session handling and an interceptor that guards data-changing requests.
+- Backend tests for services, controllers, validation, and session handling.
+
+## Data model in scope
+
+This demo focuses on the following six Chinook tables:
+
+| Table | Role in the application |
+| --- | --- |
+| `tracks` | The catalog's songs, including their album, genre, media type, composer, duration, and price. |
+| `albums` | Album titles and their artist; albums contain tracks. |
+| `artists` | Artist names associated with albums. |
+| `genres` | Genre labels associated with tracks. |
+| `media_types` | Media format labels associated with tracks. |
+| `employees` | Employee records used as the available identities in the demo sign-in flow. |
+
+Other tables in the full Chinook database are outside the scope of this README.
+
+## Sign-in and write access
+
+You must sign in to create an album, create or edit a track, or delete an album or track. The backend checks the session for data-changing requests.
+
+Sign-in is **symbolic and for demonstration only**: choose an employee from the list; no password is requested. This is not real authentication and must not be treated as production security.
+
+## Run locally
+
+Requirements: Node.js 24 and npm 12. The database file is `database/data/chinook.db`.
+
+From the repository root, install the npm workspace dependencies:
 
 ```bash
 npm install
 ```
 
-## Configuration
+Set the database URL and a session secret of at least 32 characters, then start both the NestJS backend and Angular development server. In PowerShell:
 
-Set these in `backend/.env` (or as shell environment variables, which take precedence):
-
-- `DB_URL` – path to the SQLite database file.
-- `SESSION_SECRET` – secret used to sign the session cookie. Required, at least 32 characters. The server refuses to start without it.
-- `PORT` – HTTP port (default `8080`).
-- `TRUSTED_PROXIES` – optional comma-separated proxy IP addresses or CIDRs. Unset means forwarded headers are not trusted. Set only the exact proxy addresses/ranges in front of the backend; wildcard and all-address ranges are rejected. The proxy must also set `X-Forwarded-Proto` to the original request protocol.
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```powershell
+$env:DB_URL = "../database/data/chinook.db"
+$env:SESSION_SECRET = "replace-with-at-least-32-characters"
+npm run dev
 ```
 
-## Run tests
+On macOS/Linux, use:
 
 ```bash
-# unit tests
-$ npm run test
-
-# test coverage
-$ npm run test:cov
+export DB_URL=../database/data/chinook.db
+export SESSION_SECRET=replace-with-at-least-32-characters
+npm run dev
 ```
 
-## Deployment
+Open the frontend at [http://localhost:4200](http://localhost:4200). Its development proxy forwards `/api` requests to the backend on port `8080`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Run with Docker Compose
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Set `SESSION_SECRET` in the shell or a root `.env` file, then run:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker compose up --build
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The application is available at [http://localhost:8080](http://localhost:8080). Compose mounts `database/data` into the backend container and configures the SQLite database URL.
 
-## Observability
+## Tests
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-To add it to this project:
+Run the frontend and backend test suites from the repository root with:
 
 ```bash
-$ npm install @nestjs/observe
+npm test
 ```
 
-Then follow the [setup guide](https://docs.nestjs.com/observability/overview) - it takes a single import and an app key.
+The suites can also be run individually with `npm run frontend:test`,
+`npm run backend:test`.
 
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
+Run the Bruno REST API tests separately:
 
-## Resources
+```bash
+npm run bruno:test
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## Main technologies
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **Frontend:** Angular 22, TypeScript, Signal Forms
+- **Backend:** NestJS 12, Fastify, TypeORM
+- **Database:** SQLite

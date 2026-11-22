@@ -1,0 +1,13 @@
+**/node_modules
+**/node_modules
+**/dist
+**/.angular
+**/*.tsbuildinfo
+database
+doc
+.git
+.vscode
+.idea
+_temp
+.temp
+**/.env

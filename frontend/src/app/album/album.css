@@ -1,0 +1,89 @@
+main {
+    header {
+        display: grid;
+        grid-template-columns: 1fr max-content max-content max-content;
+        column-gap: 2rem;
+        align-items: center;
+        margin-top: 0;
+        align-items: baseline;
+        padding: 0 0.5rem;
+
+        h1 {
+            margin: 0;
+        }
+
+        div.back {
+            text-align: right;
+        }
+    }
+    header.sub-header {
+        margin-bottom: 2rem;
+
+        h2 {
+            margin: 0;
+            color: var(--sub-color);
+        }
+    }
+
+    content {
+        height: 49rem;
+
+        table {
+            display: grid;
+            align-items: start;
+            grid-template-columns: 3fr max-content 1fr 5rem;
+            row-gap: 0.5rem;
+            padding: 0 0.5rem;
+
+            thead {
+                display: contents;
+                tr {
+                    display: contents;
+                    th {
+                        text-align: left;
+                        border-bottom: 1.5px solid var(--line-color);
+                        padding-bottom: 1rem;
+                        margin-bottom: 1rem;
+                        font-size: 85%;
+                        height: 1rem;
+                    }
+                }
+            }
+
+            tbody, tfoot {
+                display: contents;
+                tr {
+                    display: contents;
+                    td {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        align-content: center;
+                        background-color: transparent;
+                        padding: 0.5rem;
+                        height: 2rem;
+
+                        &.genre {
+                            font-size: 1rem;
+                        }
+
+                        &.length {
+                            text-align: right;
+                            font-size: 1.2rem;
+                            font-family: Courier New, monospace;
+                            font-weight: bold;
+                        }
+                    }
+
+                    &:hover td {
+                        background-color: var(--row-hilight);
+                    }
+                }
+            }
+
+            tfoot tr td {
+                border-top: 1.5px solid var(--line-color2);
+            }
+        }
+    }
+}
