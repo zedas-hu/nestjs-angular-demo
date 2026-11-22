@@ -24,11 +24,13 @@ export class EmployeesService {
       .addOrderBy('employee.FirstName', 'ASC')
       .getMany();
 
-    return employees.map((employee) => ({
+    return employees
+      .filter((employee): employee is Employee & { Email: string } => employee.Email !== null)
+      .map((employee) => ({
       employeeId: employee.EmployeeId,
       firstName: employee.FirstName,
       lastName: employee.LastName,
       email: employee.Email,
-    }));
+      }));
   }
 }

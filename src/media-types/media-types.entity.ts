@@ -6,5 +6,5 @@ export class MediaType {
   MediaTypeId: number;
 
   @Column({ type: 'nvarchar', length: 120, nullable: true })
-  Name: string;
+  Name: string | null;
 }

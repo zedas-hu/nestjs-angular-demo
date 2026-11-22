@@ -27,14 +27,14 @@ export class Track {
     @Column({ type: 'nvarchar', length: 200 })
     Name: string;
 
-    @Column({ nullable: true })
-    AlbumId: number;
+    @Column({ type: 'integer', nullable: true })
+    AlbumId: number | null;
 
     @Column()
     MediaTypeId: number;
 
-    @Column({ nullable: true })
-    GenreId: number;
+    @Column({ type: 'integer', nullable: true })
+    GenreId: number | null;
 
     @Column({ type: 'nvarchar', length: 220, nullable: true })
     Composer: string | null;
@@ -42,8 +42,8 @@ export class Track {
     @Column()
     Milliseconds: number;
 
-    @Column({ nullable: true })
-    Bytes: number;
+    @Column({ type: 'integer', nullable: true })
+    Bytes: number | null;
 
     @Column({ type: 'numeric', precision: 10, scale: 2 })
     UnitPrice: number;

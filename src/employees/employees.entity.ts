@@ -12,38 +12,38 @@ export class Employee {
   FirstName: string;
 
   @Column({ type: 'nvarchar', length: 30, nullable: true })
-  Title: string;
+  Title: string | null;
 
-  @Column({ nullable: true })
-  ReportsTo: number;
-
-  @Column({ type: 'datetime', nullable: true })
-  BirthDate: Date;
+  @Column({ type: 'integer', nullable: true })
+  ReportsTo: number | null;
 
   @Column({ type: 'datetime', nullable: true })
-  HireDate: Date;
+  BirthDate: Date | null;
+
+  @Column({ type: 'datetime', nullable: true })
+  HireDate: Date | null;
 
   @Column({ type: 'nvarchar', length: 70, nullable: true })
-  Address: string;
+  Address: string | null;
 
   @Column({ type: 'nvarchar', length: 40, nullable: true })
-  City: string;
+  City: string | null;
 
   @Column({ type: 'nvarchar', length: 40, nullable: true })
-  State: string;
+  State: string | null;
 
   @Column({ type: 'nvarchar', length: 40, nullable: true })
-  Country: string;
+  Country: string | null;
 
   @Column({ type: 'nvarchar', length: 10, nullable: true })
-  PostalCode: string;
+  PostalCode: string | null;
 
   @Column({ type: 'nvarchar', length: 24, nullable: true })
-  Phone: string;
+  Phone: string | null;
 
   @Column({ type: 'nvarchar', length: 24, nullable: true })
-  Fax: string;
+  Fax: string | null;
 
   @Column({ type: 'nvarchar', length: 60, nullable: true })
-  Email: string;
+  Email: string | null;
 }
