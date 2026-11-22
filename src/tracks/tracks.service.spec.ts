@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Album } from '../albums/albums.entity.js';
+import { registerUnicodeLower } from '../common/sqlite.js';
 import { Genre } from '../genres/genres.entity.js';
 import { MediaType } from '../media-types/media-types.entity.js';
 import { TrackListQueryDto } from './dto/track-list-query.dto.js';
@@ -50,6 +51,7 @@ describe('TracksService', () => {
       type: 'better-sqlite3',
       database: ':memory:',
       entities: [Track, Album, Genre, MediaType],
+      prepareDatabase: registerUnicodeLower,
     });
     await dataSource.initialize();
     for (const statement of [
@@ -140,6 +142,20 @@ describe('TracksService', () => {
 
     const literalWildcard = await service.findAll(query({ filter: '%%' }));
     expect(literalWildcard.page.totalElements).toBe(0);
+  });
+
+  it('searches and checks duplicate track names without ASCII-only case handling', async () => {
+    await dataSource.query(
+      'INSERT INTO tracks (TrackId, Name, AlbumId, MediaTypeId, GenreId, Composer, Milliseconds, Bytes, UnitPrice) VALUES (4, ?, 1, 1, 1, NULL, 300000, NULL, 0.99)',
+      ['ÁÁ Review'],
+    );
+
+    const uppercaseSearch = await service.findAll(query({ filter: 'ÁÁ' }));
+    const lowercaseSearch = await service.findAll(query({ filter: 'áá' }));
+    expect(uppercaseSearch.content.map((track) => track.trackId)).toEqual([4]);
+    expect(lowercaseSearch.content.map((track) => track.trackId)).toEqual([4]);
+
+    await expectProblem(service.create(post({ name: 'áá REVIEW' })), 409, 'TRACK_NAME_DUPLICATION');
   });
 
   it('sorts by allowed properties and rejects unknown ones', async () => {

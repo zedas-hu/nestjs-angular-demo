@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { registerUnicodeLower } from './common/sqlite.js';
 import { AlbumsModule } from './albums/albums.module.js';
 import { ArtistsModule } from './artists/artists.module.js';
 import { EmployeesModule } from './employees/employees.module.js';
@@ -18,6 +19,7 @@ import { TracksModule } from './tracks/tracks.module.js';
         autoLoadEntities: true,
         synchronize: false,
         fileMustExist: true,
+        prepareDatabase: registerUnicodeLower,
       }),
     }),
     TracksModule,

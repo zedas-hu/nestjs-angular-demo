@@ -124,13 +124,13 @@ export class TracksService {
     if (term.length < 2) {
       return;
     }
-    const pattern = `%${term.toLowerCase().replace(/[\\%_]/g, '\\$&')}%`;
+    const pattern = `%${term.normalize('NFC').toLowerCase().replace(/[\\%_]/g, '\\$&')}%`;
     qb.andWhere(
       new Brackets((where) =>
         where
-          .where("LOWER(track.Name) LIKE :pattern ESCAPE '\\'", { pattern })
-          .orWhere("LOWER(album.Title) LIKE :pattern ESCAPE '\\'")
-          .orWhere("LOWER(artist.Name) LIKE :pattern ESCAPE '\\'"),
+          .where("unicode_lower(track.Name) LIKE :pattern ESCAPE '\\'", { pattern })
+          .orWhere("unicode_lower(album.Title) LIKE :pattern ESCAPE '\\'")
+          .orWhere("unicode_lower(artist.Name) LIKE :pattern ESCAPE '\\'"),
       ),
     );
   }
@@ -213,7 +213,7 @@ export class TracksService {
     const qb = this.tracksRepository
       .createQueryBuilder('track')
       .where('track.AlbumId = :albumId', { albumId: dto.albumId })
-      .andWhere('LOWER(track.Name) = LOWER(:name)', { name: dto.name });
+      .andWhere('unicode_lower(track.Name) = unicode_lower(:name)', { name: dto.name });
     if (excludeTrackId !== null) {
       qb.andWhere('track.TrackId <> :excludeTrackId', { excludeTrackId });
     }
