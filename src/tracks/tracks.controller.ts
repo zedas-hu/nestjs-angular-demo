@@ -1,7 +1,7 @@
 import { Body, Controller, DefaultValuePipe, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe,
   Post, Put, Query, Res } from '@nestjs/common';
 import type { PagedModel, TrackRecord } from '@demo/shared';
-import type { Response } from 'express';
+import type { FastifyReply } from 'fastify';
 import { createValidationPipe } from '../common/problem.js';
 import { TrackPostDto } from './dto/track-post.dto.js';
 import { TracksService } from './tracks.service.js';
@@ -36,10 +36,10 @@ export class TracksController {
   @HttpCode(HttpStatus.CREATED)
   async createTrack(
     @Body(trackBodyPipe) body: TrackPostDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<TrackRecord> {
     const track = await this.tracksService.create(body);
-    res.location(`/api/tracks/${track.trackId}`);
+    res.header('Location', `/api/tracks/${track.trackId}`);
     return track;
   }
 

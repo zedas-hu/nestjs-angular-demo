@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EmployeesModule } from './employees/employees.module.js';
+import { LoginModule } from './login/login.module.js';
 import { TracksModule } from './tracks/tracks.module.js';
 
 @Module({
@@ -16,6 +18,8 @@ import { TracksModule } from './tracks/tracks.module.js';
       }),
     }),
     TracksModule,
+    EmployeesModule,
+    LoginModule,
   ],
   controllers: [AppController],
   providers: [AppService],

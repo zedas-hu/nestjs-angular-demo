@@ -33,6 +33,14 @@ Install dependencies once from the repository root:
 npm install
 ```
 
+## Configuration
+
+Set these in `backend/.env` (or as shell environment variables, which take precedence):
+
+- `DB_URL` – path to the SQLite database file.
+- `SESSION_SECRET` – secret used to sign the session cookie. Required, at least 32 characters. The server refuses to start without it.
+- `PORT` – HTTP port (default `8080`).
+
 ## Compile and run the project
 
 ```bash
