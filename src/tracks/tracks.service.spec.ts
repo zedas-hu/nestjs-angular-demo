@@ -1,15 +1,16 @@
-import { BadRequestException, HttpException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Album } from '../albums/albums.entity.js';
 import { Genre } from '../genres/genres.entity.js';
 import { MediaType } from '../media-types/media-types.entity.js';
+import { TrackListQueryDto } from './dto/track-list-query.dto.js';
 import { TrackPostDto } from './dto/track-post.dto.js';
 import { Track } from './tracks.entity.js';
-import { TrackListQuery, TracksService } from './tracks.service.js';
+import { TracksService } from './tracks.service.js';
 
-const query = (overrides: Partial<TrackListQuery> = {}): TrackListQuery => ({
+const query = (overrides: Partial<TrackListQueryDto> = {}): TrackListQueryDto => ({
   filter: undefined,
   page: 0,
   size: 20,
@@ -145,7 +146,13 @@ describe('TracksService', () => {
     const result = await service.findAll(query({ sort: ['albumArtistName,desc'] }));
     expect(result.content.map((track) => track.trackId)).toEqual([1, 2, 3]);
 
-    await expect(service.findAll(query({ sort: ['constructor'] }))).rejects.toThrow(BadRequestException);
+    await expectProblem(service.findAll(query({ sort: ['constructor'] })), 400, 'INVALID_TRACK_QUERY');
+    await expectProblem(service.findAll(query({ sort: ['name,asc,whatever'] })), 400, 'INVALID_TRACK_QUERY');
+  });
+
+  it('rejects unsafe pagination values and offsets as a bad query', async () => {
+    await expectProblem(service.findAll(query({ page: Number.MAX_SAFE_INTEGER, size: 2 })), 400, 'INVALID_TRACK_QUERY');
+    await expectProblem(service.findAll(query({ size: Number.MAX_SAFE_INTEGER + 1 })), 400, 'INVALID_TRACK_QUERY');
   });
 
   it('creates a track and returns it in the list response shape', async () => {

@@ -1,4 +1,4 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import type { PagedModel, TrackRecord } from '@demo/shared';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
@@ -6,15 +6,9 @@ import { Album } from '../albums/albums.entity.js';
 import { businessError, problem } from '../common/problem.js';
 import { Genre } from '../genres/genres.entity.js';
 import { MediaType } from '../media-types/media-types.entity.js';
+import { TrackListQueryDto } from './dto/track-list-query.dto.js';
 import { TrackPostDto } from './dto/track-post.dto.js';
 import { Track } from './tracks.entity.js';
-
-export interface TrackListQuery {
-  filter: string | undefined;
-  page: number;
-  size: number;
-  sort: string[];
-}
 
 type SortDirection = 'ASC' | 'DESC';
 
@@ -58,9 +52,18 @@ export class TracksService {
     private mediaTypesRepository: Repository<MediaType>,
   ) {}
 
-  async findAll(query: TrackListQuery): Promise<PagedModel<TrackRecord>> {
-    if (query.page < 0 || query.size < 1) {
-      throw new BadRequestException('Invalid page or size');
+  async findAll(query: TrackListQueryDto): Promise<PagedModel<TrackRecord>> {
+    if (!Number.isSafeInteger(query.page) || query.page < 0) {
+      throw problem(HttpStatus.BAD_REQUEST, 'INVALID_TRACK_QUERY', { page: 'PAGE_INVALID' });
+    }
+    if (!Number.isSafeInteger(query.size) || query.size < 1) {
+      throw problem(HttpStatus.BAD_REQUEST, 'INVALID_TRACK_QUERY', { size: 'SIZE_INVALID' });
+    }
+    if (!Number.isSafeInteger(query.page * query.size)) {
+      throw problem(HttpStatus.BAD_REQUEST, 'INVALID_TRACK_QUERY', { page: 'PAGE_INVALID' });
+    }
+    if (query.filter !== undefined && typeof query.filter !== 'string') {
+      throw problem(HttpStatus.BAD_REQUEST, 'INVALID_TRACK_QUERY', { filter: 'FILTER_INVALID' });
     }
 
     const [[firstColumn, firstDirection], ...restOrders] = this.parseSort(query.sort);
@@ -135,11 +138,12 @@ export class TracksService {
   private parseSort(sort: string[]): [string, SortDirection][] {
     const clauses = sort.length > 0 ? sort : ['name,asc'];
     return clauses.map((clause) => {
-      const [property, rawDirection = 'asc'] = clause.split(',').map((part) => part.trim());
+      const parts = clause.split(',').map((part) => part.trim());
+      const [property, rawDirection = 'asc'] = parts;
       const column = SORT_COLUMNS.get(property);
       const dir = rawDirection.toLowerCase();
-      if (!column || (dir !== 'asc' && dir !== 'desc')) {
-        throw new BadRequestException('Unsupported sort property');
+      if (parts.length > 2 || !column || (dir !== 'asc' && dir !== 'desc')) {
+        throw problem(HttpStatus.BAD_REQUEST, 'INVALID_TRACK_QUERY', { sort: 'SORT_INVALID' });
       }
       return [column, dir.toUpperCase() as SortDirection];
     });
