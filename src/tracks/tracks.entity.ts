@@ -37,7 +37,7 @@ export class Track {
     GenreId: number;
 
     @Column({ type: 'nvarchar', length: 220, nullable: true })
-    Composer: string;
+    Composer: string | null;
 
     @Column()
     Milliseconds: number;
