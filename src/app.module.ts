@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AlbumsModule } from './albums/albums.module.js';
 import { ArtistsModule } from './artists/artists.module.js';
@@ -18,7 +16,8 @@ import { TracksModule } from './tracks/tracks.module.js';
         database: process.env.DB_URL,
         entities: [],
         autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV === 'development',
+        synchronize: false,
+        fileMustExist: true,
       }),
     }),
     TracksModule,
@@ -29,8 +28,6 @@ import { TracksModule } from './tracks/tracks.module.js';
     EmployeesModule,
     LoginModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
 
