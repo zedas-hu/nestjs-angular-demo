@@ -39,6 +39,10 @@ This demo focuses on the following six Chinook tables:
 
 Other tables in the full Chinook database are outside the scope of this README.
 
+## Shared API contract
+
+The frontend and backend use the same communication types. The `shared/` workspace package (`@demo/shared`) defines the request, response, and record interfaces (for example `TrackRecord`, `AlbumCreateRequest`, `PagedModel<T>`, `ProblemDetail`, and `CurrentUser`) in `shared/src/interfaces.ts`. Both the NestJS controllers/services and the Angular services import these types, so the API contract is defined once and checked by TypeScript on both sides. The package contains only types and constants, so it adds no runtime dependencies to either application.
+
 ## Sign-in and write access
 
 You must sign in to create an album, create or edit a track, or delete an album or track. The backend checks the session for data-changing requests.
