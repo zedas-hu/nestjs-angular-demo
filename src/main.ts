@@ -4,6 +4,7 @@ import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fa
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
 import { AppModule } from './app.module.js';
+import { parseTrustedProxies } from './common/trusted-proxies.js';
 
 async function bootstrap() {
   if (existsSync('.env')) {
@@ -15,7 +16,10 @@ async function bootstrap() {
     throw new Error('SESSION_SECRET is required (set it in backend/.env), at least 32 characters long');
   }
 
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({ trustProxy: parseTrustedProxies(process.env.TRUSTED_PROXIES) }),
+  );
   await app.register(fastifyCookie);
   await app.register(fastifySession, {
     secret: sessionSecret,

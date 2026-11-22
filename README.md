@@ -40,6 +40,7 @@ Set these in `backend/.env` (or as shell environment variables, which take prece
 - `DB_URL` – path to the SQLite database file.
 - `SESSION_SECRET` – secret used to sign the session cookie. Required, at least 32 characters. The server refuses to start without it.
 - `PORT` – HTTP port (default `8080`).
+- `TRUSTED_PROXIES` – optional comma-separated proxy IP addresses or CIDRs. Unset means forwarded headers are not trusted. Set only the exact proxy addresses/ranges in front of the backend; wildcard and all-address ranges are rejected. The proxy must also set `X-Forwarded-Proto` to the original request protocol.
 
 ## Compile and run the project
 
