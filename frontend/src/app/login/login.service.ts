@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import type { CurrentUser, EmployeeRecord, LoginSessionResponse } from '@demo/shared';
+import type { CurrentUser, EmployeeRecord } from '@demo/shared';
 import { ApiService } from '../api.service';
 
 @Injectable({ providedIn: 'root' })
@@ -33,23 +33,17 @@ export class LoginService {
     }
   }
 
-  async login(email: string): Promise<string> {
-    const session = await this.api.request<LoginSessionResponse>('POST', '/api/login', {
+  async login(email: string): Promise<void> {
+    const currentUser = await this.api.request<CurrentUser>('POST', '/api/login', {
       body: { email },
       fallbackError: 'LOGIN_FAILED',
     });
-    if (!session.email) {
+    if (!currentUser.email) {
       throw new Error('LOGIN_FAILED');
     }
 
-    this.currentUserState.set({
-      employeeId: null,
-      firstName: null,
-      lastName: null,
-      email: session.email,
-    });
+    this.currentUserState.set(currentUser);
     this.sessionChecked.set(true);
-    return session.email;
   }
 
   async logout(): Promise<void> {

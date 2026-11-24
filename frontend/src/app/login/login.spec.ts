@@ -24,7 +24,14 @@ describe('LoginComponent', () => {
       }
 
       if (url === '/api/login' && method === 'POST') {
-        return { body: { email: 'jane@example.com' } };
+        return {
+          body: {
+            employeeId: 7,
+            firstName: 'Jane',
+            lastName: 'Doe',
+            email: 'jane@example.com',
+          },
+        };
       }
 
       throw new Error(`Unexpected request: ${url}`);
@@ -72,6 +79,12 @@ describe('LoginComponent', () => {
     await component.login(new Event('submit', { cancelable: true }));
 
     expect(TestBed.inject(LoginService).hasSession()).toBe(true);
+    expect(TestBed.inject(LoginService).currentUser()).toEqual({
+      employeeId: 7,
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'jane@example.com',
+    });
     expect(apiMock).toHaveBeenLastCalledWith(expect.objectContaining({
       method: 'POST',
       url: '/api/login',

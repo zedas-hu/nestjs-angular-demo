@@ -53,11 +53,7 @@ export interface LoginRequest {
   email: string;
 }
 
-export interface LoginSessionResponse {
-  email: string | null;
-}
-
-// Stored in the session after login; GET /api/login/session returns all nulls when there is no session.
+// Stored in the session after login; POST /api/login returns it for the new session and GET /api/login/session returns all nulls when there is no session.
 export interface CurrentUser {
   employeeId: number | null;
   firstName: string | null;

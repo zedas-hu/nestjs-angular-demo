@@ -61,7 +61,7 @@ describe('App', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    apiMock.mockReturnValueOnce({ body: { email: 'jane@example.com' } });
+    apiMock.mockReturnValueOnce({ body: { employeeId: 7, firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com' } });
     await TestBed.inject(LoginService).login('jane@example.com');
     fixture.detectChanges();
     expect(fixture.componentInstance.hasSession()).toBe(true);

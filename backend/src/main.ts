@@ -28,6 +28,6 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   // Fastify binds to localhost by default; 0.0.0.0 is needed so the Docker frontend container can reach it.
-  await app.listen(process.env.PORT ?? 8080, '0.0.0.0');
+  await app.listen(process.env.PORT ?? 8080, process.env.HOST ?? '0.0.0.0');
 }
 await bootstrap();
